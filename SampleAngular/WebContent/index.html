@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script type="text/javascript"  src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script type="text/javascript"  src="js/myangular.js"></script>
+<title>Hello First Angular</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+.modal {
+    display: block; /* Hidden by default */
+    position: relative; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+   
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%; /* Could be more or less, depending on screen size */
+    position: absolute;
+    left: 770px;
+    top:125px;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+table, th , td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.previous {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.next {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.round {
+    border-radius: 50%;
+}
+</style> 
+</head>
+<body>
+<h3>World Countries </h3>
+
+<!-- <h1><marquee>welcome angular users html!!!</marquee></h1>
+ -->
+<div ng-app="myFirstApp" ng-controller="myFirstController" class="modal">
+
+
+<!-- 
+<ul ng-repeat="name in countryData">
+<li >{{ name.name }}</li>
+<li >{{ name.alpha2_code }}</li>
+
+<li >{{ name.alpha3_code }}</li>
+
+
+</ul> -->
+
+<span>Get All The Countries:</span><button ng-click="getCountryData()">GO</button><br/>
+<div ng-show='isCountry'>
+<table>
+<tr><td><span>Search Your Country:</span></td><td><input ng--model="searchtxt" id="searchtxt" ></td></tr>
+<tr><td><span>Add Your Country:</span></td><td><button ng-click="addCountryPopup()">Add</button></td></tr>
+<tr><td><span>Row per page:</span></td><td><select id="drpdwn" ng-change="pageChange()" ng-model="drpdwn" title="page" >
+<option value="10">10</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select><a href="#" class="previous round" ng-click="getPrevCountryData()">&#8249;</a>
+<a href="#" class="next round" ng-click="getNextCountryData()">&#8250;</a></td></tr>
+
+</table>
+
+
+</div>
+
+<div id="addCountry" ng-show='isAddCountry' class="modal-content">
+
+<table>
+<tr><td colspan="2"><span>Add Your Contry</span></td></tr>
+<tr><td>Name:</td><td><input ng-model='addCountryName'/></td></tr>
+<tr><td>Alpha2:</td><td><input ng-model='addCountryAlpha2'/></td></tr>
+<tr><td>Alpha3:</td><td><input ng-model='addCountryAlpha3'/></td></tr>
+<tr><td>Save:</td><td><button ng-click="addCountryData()">Save</button><button ng-click="addCountryPopupCancel()">Cancel</button></td></tr>
+</table>
+</div>
+
+<div id="editCountry" ng-show='isEditCountry' class="modal-content">
+<table>
+<tr><td colspan="2"><span>Edit Your Contry</span></td></tr>
+
+<tr><td>Name:</td><td><input ng-model='editCountryName'/></td></tr>
+<tr><td>Alpha2:</td><td><input ng-model='editCountryAlpha2'/></td></tr>
+<tr><td>Alpha3:</td><td><input ng-model='editCountryAlpha3'/></td></tr>
+<tr><td>Save:</td><td><button ng-click="editCountryData()">Save</button><button ng-click="editCountryPopupCancel()">Cancel</button></td></tr>
+</table>
+</div>
+
+<table ng-show="isshowtable">
+<thead>
+<th ng-click="sortByName('adsf')">Sr No.</th>
+<th ng-click="sortByName('name')">Name</th>
+<th ng-click="sortByName('alpha2_code')">Alpha2</th>
+<th ng-click="sortByName('alpha3_code')">Alpha3</th>
+<th>Delete</th>
+<th>Edit</th>
+</thead>
+<tr ng-repeat="name in countryData | orderBy:sortType:sortReverse | filter:searchtxt">
+<td>{{ $index+1  }}</td>
+<td>{{ name.name  }}</td>
+<td>{{ name.alpha2_code  }}</td>
+<td>{{ name.alpha3_code  }}</td>
+<td>
+<i class="material-icons" ng-click="deleteCountryData($index+1,name)" >delete</i>
+
+</td>
+<td>
+<button type="button" class="btn btn-default btn-sm" ng-click="editCountryPopup($index+1,name)" >
+          <span class="glyphicon glyphicon-pencil"></span> 
+        </button>
+
+</td>
+</tr>
+</table>
+
+<!-- <input ng-model='x'> -->
+
+</div>
+
+</body>
+</html>
